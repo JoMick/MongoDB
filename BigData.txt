@@ -1,0 +1,60 @@
+Filtre et projection
+
+recherche sur un champ particulier
+
+db.restaurants.distinct("borough')
+
+
+
+Lister selon X mots-clés
+db.restaurants.find({"borough" : "Manhattan", "cuisine":"French") .....}
+
+
+
+On peut y ajouter "la projection" pour n'avoir que le nom sans l'ID (qui est renvoyé par defaut)
+
+db.restaurants.find({"borough" : "Manhattan", "kitchen":"French"},
+			{"name":1, "_id":0})
+
+
+
+si on veut renvoyer un parametre il faut ajouter "$param":1
+
+
+
+
+db.restaurants.find({​​​​'borough':'Manhattan', 'grades': {​​​​$elemMatch: {​​​​'score': {​​​​$lt: 5}​​​​}​​​​}​​​​}​​​​)
+Va nous renvoyer un Resto de Manhattan dans lequel un des Score est plus petit que 5.
+
+
+ex:
+grade A et score de max 5
+ 
+db.restaurants.find({
+	'borough':'Manhattan',
+	'grades': { 
+		    $elemMatch:{
+			'score':{$not: {$lt: 5}},
+			'grade':'A'
+		}
+	}
+}
+
+
+
+Aggrégation
+
+
+db.restaurants.aggregate([
+{$match :{ "grades.0.grade":"B"}}
+{$project:{
+	"nam":1}}
+])
+
+comme c'est du JS on peut reformuler
+match = {$match :{ "grades.0.grade":"B"}}
+project = {$project:{"name":1}}])
+
+db.restaurants.aggregate([match,project]);
+
+Avec ça on va pouvoir faire des recherches plus complexes en combinants nos méthodes
